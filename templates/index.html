@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNN Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(this);
+                console.log(formData);
+
+                $.ajax({
+                    url: '/predict',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        data = response.data[0];
+                        console.log(data);  
+ 
+                        if(data.type == "single"){
+                            if (data.prediction == 0) {
+                                $('#result').html(`<div class="flex items-center p-4 mb-4 text-xs text-green-800 border border-green-300 rounded-lg bg-green-50 " role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                    <span class="font-medium">Info !</span> This Packet is predicted as not Intrusion 
+                                </div>
+                                </div>`)
+                            } 
+                            else {
+                                $('#result').html(`<div class="flex items-center p-4 mb-4 text-xs text-red-800 border border-red-300 rounded-lg bg-red-50 " role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <div>
+                                    <span class="font-medium">Danger !</span> This Packet is predicted as Intrusion  
+                                </div>
+                                </div>`);
+                            }
+                        }
+                        else {
+                            var table = `<div class="overflow-x-auto">
+                                <table class="mt-5 min-w-full divide-y divide-gray-200 text-center border">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">No</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">pkts</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">bytes</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">spkts</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">sbytes</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">TnBPDstIP</th>
+                                            <th scope="col" class="px-6 py-3 text-xs font-medium text-gray-500 tracking-wider">Prediction</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">`;
+
+                            for (let i = 0; i < data.prediction.length; i++) {
+                                const row = data.data[i];
+                                table += `<tr>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${i+1}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${row.pkts}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${row.bytes}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${row.spkts}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${row.sbytes}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${row.TnBPDstIP}</div></td>
+                                    <td class="px-5 py-4 whitespace-nowrap">
+                                        <div class="flex items-center justify-center text-center ${data.prediction[i] == 0 ? 'bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full' : 'bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full'}">
+                                            ${data.prediction[i] == 0 ? 'Not Intrusion' : 'Intrusion'}
+                                        </div>
+                                    </td>
+
+                                </tr>`;
+                            }
+
+                            table += `</tbody></table></div>`;
+                            $('#result').html(table);
+                        }
+
+                    },
+                    error: function () {
+                        $('#result').text('Error submitting form!');
+                    }
+                });
+            });
+            $('#reset-btn').on('click', function () {
+                $('form')[0].reset(); 
+                $('#result').empty(); 
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#howitworks').on('click', function () {
+                Swal.fire({
+                    title: 'How it Works ?',
+                    text: 'This application detects intrusions based on anomaly detection using AI. It utilizes optimized features for improved accuracy and performance.',
+                    icon: 'question',
+                    confirmButtonText: 'Close'
+                });
+            });
+        });
+    </script>
+    <style>
+        ::placeholder {
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen items-center justify-center">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <div class="max-w-full mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="mx-10 flex items-center">
+                    <img src="./Optaids.png" alt="Logo" class="h-10 w-10 mr-2">
+                    <!-- <span class="text-xl font-semibold text-blue-600">wkwk</span> -->
+                </div>
+
+                <!-- Navigation Items -->
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-16">
+                        <div class="relative group">
+                            <button class="px-3 py-2 text-gray-700 hover:text-blue-600">
+                                Algorithm
+                                <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div class="absolute hidden group-hover:block w-48 bg-white border rounded-md shadow-lg mt-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('KNN')">K-Nearest Neighbor</a>
+                                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Random Forest')">Random Forest</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Decision Tree')">Decison Tree</a> -->
+                            </div>
+                        </div>
+                        <div class="relative group">
+                            <button class="px-3 py-2 text-gray-700 hover:text-blue-600">
+                                Version
+                                <svg class="inline-block w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div class="absolute hidden group-hover:block w-48 bg-white border rounded-md shadow-lg mt-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Version1.0.0')">V.1.0.0</a>
+                                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Random Forest')">Random Forest</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Decision Tree')">Decison Tree</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- versi -->
+                <div class="flex items-center space-x-4">
+                    <button id="howitworks" class="flex items-center px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-diamond-fill mr-2" viewBox="0 0 16 16">
+                            <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098zM5.495 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927"/>
+                        </svg>
+                        <p class="mr-1">About</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="knn-content" class="bg-white shadow-lg rounded-lg p-8 max-w-2xl w-full my-28 mx-auto">
+        <h1 class="text-2xl font-semibold mb-6 text-center text-gray-800">Intrusion Detection System Using KNN</h1>
+        <form class="space-y-6">
+            <!-- upload-an -->
+            <div>
+                <label for="file" class="block text-sm font-medium text-gray-700">Upload Your CSV File Here!</label>
+                <input type="file" name="file" accept=".csv"
+                    class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- tulisan -->
+            <div class="justify-center text-center pt-2">
+                <h1 class="text-xl font-semibold text-gray-800">OR</h1>
+                <h1 class="text-sm italic font-medium text-gray-700">Input Below Directly!</h1>
+            </div>
+
+            <!-- input manual -->
+            <div class="grid grid-cols-2 gap-5">
+                <div>
+                    <label for="pkts" class="block text-sm font-medium text-gray-700">pkts</label>
+                    <input type="number" name="pkts" step="any" placeholder="Total count of packets in transaction"
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="bytes" class="block text-sm font-medium text-gray-700">bytes</label>
+                    <input type="number" name="bytes" step="any" placeholder="Total number of bytes in transaction"
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="spkts" class="block text-sm font-medium text-gray-700">spkts</label>
+                    <input type="number" name="spkts" step="any" placeholder="Source-to-destination packet count"
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="sbytes" class="block text-sm font-medium text-gray-700">sbytes</label>
+                    <input type="number" name="sbytes" step="any" placeholder="Source-to-destination byte count"
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="TnBPDstIP" class="block text-sm font-medium text-gray-700">TnBPDstIP</label>
+                    <input type="number" name="TnBPDstIP" step="any" placeholder="Total Number of bytes per Destination IP"
+                        class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <!-- submit -->
+            <div class="pt-3 space-y-4">
+                <button type="button" id="reset-btn" class="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2">Reset</button>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Check</button>
+            </div>
+        </form>
+
+        <!-- result -->
+        <div id="result" class=" my-6"></div>
+    </div>
+
+    <script>
+
+    </script>
+</body>
+
+</html>
