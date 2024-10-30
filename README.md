@@ -1,4 +1,4 @@
-# Optimizing Machine Learning Models for Anomaly-based Intrusion Detection System (IDS)
+# Opta-IDS (Optimizing Machine Learning Models for Anomaly-based Intrusion Detection System)
 
 This repository contains a web application developed with Python and Flask, designed to demonstrate and optimize machine learning models for an anomaly-based Intrusion Detection System (IDS). It aims to assist in identifying unusual patterns that may indicate potential threats in a network.
 
