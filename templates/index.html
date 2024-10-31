@@ -128,7 +128,6 @@
                 <!-- Logo -->
                 <div class="ml-3 flex items-center">
                     <img src="{{url_for('static',filename = 'images/Optaids.png')}}" alt="Logo" class="h-20 w-20">
-                    <!-- <span class="text-xl font-semibold text-blue-600">wkwk</span> -->
                 </div>
 
                 <!-- Navigation Items -->
@@ -143,8 +142,6 @@
                             </button>
                             <div class="absolute hidden group-hover:block w-48 bg-white border rounded-md shadow-lg mt-1">
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('KNN')">K-Nearest Neighbor</a>
-                                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Random Forest')">Random Forest</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Decision Tree')">Decison Tree</a> -->
                             </div>
                         </div>
                         <div class="relative group">
@@ -156,8 +153,6 @@
                             </button>
                             <div class="absolute hidden group-hover:block w-48 bg-white border rounded-md shadow-lg mt-1">
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Version1.0.0')">V.1.0.0</a>
-                                <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Random Forest')">Random Forest</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="switchContent('Decision Tree')">Decison Tree</a> -->
                             </div>
                         </div>
                     </div>
@@ -196,27 +191,27 @@
             <div class="grid grid-cols-2 gap-5">
                 <div>
                     <label for="pkts" class="block text-sm font-medium text-gray-700">pkts</label>
-                    <input type="number" name="pkts" step="any" placeholder="Total count of packets in transaction"
+                    <input type="number" name="pkts" min=0 step="any" placeholder="Total count of packets in transaction"
                         class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label for="bytes" class="block text-sm font-medium text-gray-700">bytes</label>
-                    <input type="number" name="bytes" step="any" placeholder="Total number of bytes in transaction"
+                    <input type="number" name="bytes" min=0 step="any" placeholder="Total number of bytes in transaction"
                         class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label for="spkts" class="block text-sm font-medium text-gray-700">spkts</label>
-                    <input type="number" name="spkts" step="any" placeholder="Source-to-destination packet count"
+                    <input type="number" name="spkts" min=0 step="any" placeholder="Source-to-destination packet count"
                         class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label for="sbytes" class="block text-sm font-medium text-gray-700">sbytes</label>
-                    <input type="number" name="sbytes" step="any" placeholder="Source-to-destination byte count"
+                    <input type="number" name="sbytes" min=0 step="any" placeholder="Source-to-destination byte count"
                         class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
                     <label for="TnBPDstIP" class="block text-sm font-medium text-gray-700">TnBPDstIP</label>
-                    <input type="number" name="TnBPDstIP" step="any" placeholder="Total Number of bytes per Destination IP"
+                    <input type="number" name="TnBPDstIP" min=0 step="any" placeholder="Total Number of bytes per Destination IP"
                         class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -231,10 +226,6 @@
         <!-- result -->
         <div id="result" class=" my-6"></div>
     </div>
-
-    <script>
-
-    </script>
 </body>
 
 </html>
