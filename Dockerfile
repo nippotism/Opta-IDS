@@ -21,8 +21,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
-# Expose Flask app port
-EXPOSE 5000
-
-# Run with gunicorn
-CMD ["gunicorn", "--workers=1", "--bind=0.0.0.0:5000", "app:app"]
+# Use waitress for serving Flask
+EXPOSE 5001
+CMD ["waitress-serve", "--port=5001", "app:app"]
