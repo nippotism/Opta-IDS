@@ -22,5 +22,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Use waitress for serving Flask
-EXPOSE 5001
-CMD ["waitress-serve", "--port=5001", "app:app"]
+EXPOSE 5000
+CMD ["waitress-serve", "--port=5000", "app:app"]
